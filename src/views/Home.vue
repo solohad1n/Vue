@@ -16,9 +16,10 @@
 <script>
 import Categories from '../components/Categories/Categories.vue';
 import Sort from '../components/Sort/Sort.vue';
+import PizzaList from '../components/Pizza/List.vue';
 
 export default {
-  components: { Categories, Sort },
+  components: { Categories, Sort, PizzaList },
 
 }
 </script>
