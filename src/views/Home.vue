@@ -5,9 +5,12 @@
         <Categories />
         <Sort />
       </div>
+      <h2 class="content__title">Все пиццы</h2>
+      <div class="content__items">
+        <PizzaList :pizzas="pizzas" />
+      </div>
     </div>
   </div>
-  
 </template>
 
 <script>
