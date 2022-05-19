@@ -11,7 +11,7 @@
       <SearchBar/>
       <div class="header__cart">
         <a href="/cart.html" class="button button--cart">
-          <span>500 ₽</span>
+          <span>{{totalPrice ? totalPrice:0}} ₽</span>
           <div class="button__delimiter"></div>
           <svg
             width="18"
@@ -42,7 +42,7 @@
               stroke-linejoin="round"
             />
           </svg>
-          <span>10</span>
+          <span>{{totalCount ? totalCount:0}}</span>
           <a href="http://localhost:8081/#/cart" class="button button--cart">
           <span class="">Карзина</span></a>
         </a>
@@ -53,12 +53,23 @@
 
 <script>
 import pizzaIcon from "@/assets/img/pizza-logo.svg";
+import { useStore } from "vuex";
+import { computed } from "@vue/runtime-core";
+import SearchBar from '../SearchBar/SearchBar.vue'
 export default {
-  setup(){
-    return{
-      pizzaIcon
-    }
-  }
+  components: {SearchBar},
+  setup() {
+    const store = useStore();
+
+    const totalPrice = computed(() => store.getters.totalSumOfPizzas);
+    const totalCount = computed(() => store.getters.totalCountOfPizzas);
+
+    return {
+      pizzaIcon,
+      totalPrice,
+      totalCount
+    };
+  },
 };
 </script>
 
@@ -96,4 +107,4 @@ export default {
     }
   }
 }
-</style> 
+</style>

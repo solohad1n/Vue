@@ -14,14 +14,23 @@
 </template>
 
 <script>
-import Categories from '../components/Categories/Categories.vue';
-import Sort from '../components/Sort/Sort.vue';
-import PizzaList from '../components/Pizza/List.vue';
-
+import Categories from "@/components/Categories/Categories";
+import Sort from "@/components/Sort/Sort";
+import PizzaList from "../components/Pizza/List.vue";
+import { computed, onMounted } from "@vue/runtime-core";
+import {useStore} from 'vuex';
 export default {
-  components: { Categories, Sort, PizzaList },
+  components: { Categories, Sort, PizzaList},
+  setup() {
+    const store = useStore();
+    const pizzas = computed(() => store.state.pizzas)
 
-}
+    onMounted(() => {
+      store.dispatch('getPizzas')
+    });
+    return { pizzas };
+  },
+};
 </script>
 
 <style>
