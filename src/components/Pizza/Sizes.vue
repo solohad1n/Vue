@@ -18,7 +18,7 @@
 import { ref } from "@vue/reactivity";
 export default {
   props: ["availableSizes"],
-  setup(props) {
+  setup(props,context) {
     const sizesItems = [26, 30, 40];
     const activeSize = ref(0);
 
@@ -30,6 +30,7 @@ export default {
 
     const handleActiveSize = (index) => {
       activeSize.value = index;
+      context.emit('activeSizePrice',index)
     };
 
     return { sizesItems, activeSize, handleActiveSize };

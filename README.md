@@ -1,4 +1,4 @@
-# pizza_1.1v
+# vue-pizza
 
 ## Project setup
 ```

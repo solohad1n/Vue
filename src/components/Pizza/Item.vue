@@ -6,10 +6,10 @@
         <h4 class="pizza-block__title">{{pizza.name}}</h4>
         <div class="pizza-block__selector">
             <Types :availableTypes="pizza.types" />
-            <Sizes :availableSizes="pizza.sizes" />
+            <Sizes @activeSizePrice="selectedPizzaPrice = $event" :availableSizes="pizza.sizes" />
         </div>
         <div class="pizza-block__bottom">
-            <div class="pizza-block__price">от {{pizza.price}} ₽</div>
+            <div class="pizza-block__price">от {{pizza.price[selectedPizzaPrice]}} ₽</div>
             <div @click="handleAddCount" class="button button--outline button--add">
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -36,16 +36,20 @@ export default {
         const store = useStore()
         const count = computed(()=> store.state.cartItems.get(props.pizza.id)?.count)
 
+        const selectedPizzaPrice = ref(0)
+
         const pizzainCart = {...props.pizza, count: count.value}
+
         const handleAddCount = () => {
-            // count.value++
+            
 
             store.commit("ADD_TO_CART", pizzainCart)
         }
 
         return{
             handleAddCount,
-            count
+            count,
+            selectedPizzaPrice
         }
     }
 }

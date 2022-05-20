@@ -41,7 +41,7 @@ export default createStore({
       state.sort = sortKey;
     },
     ADD_TO_CART(state, pizza) {
-      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id);
+      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id + );
       if (isPizzaAlreadyAdded) {
         const modifiedPizza = {
           ...pizza,

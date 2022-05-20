@@ -1,10 +1,7 @@
 <template>
     <div class="admin">
         <SideBar />
-        <!-- <AddProduct /> -->
-        <AddPizza />
-        <!-- <AddScore /> -->
-
+        <AddProduct />
     </div>
 </template>
 
