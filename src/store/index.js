@@ -1,112 +1,123 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
 
 export default createStore({
   state: {
     pizzas: [],
-    searchedItems: '',
     category: null,
-    sort: {
-      key: 'rating',
-      order: 'asc',
-      name: 'по умолчанию',
-    },
-    query: `?_sort=rating&_order=asc,`,
+    sort: "raiting",
     cartItems: new Map(),
+    searchValues: "",
   },
   getters: {
     totalSumOfPizzas(state) {
-      const pizzas = state.cartItems;
+      const price = state.cartItems;
       let sum = 0;
 
-      for (const pizza of pizzas.values()) {
-        sum += pizza.price * pizza.count
+      for (const pizza of price.values()) {
+        sum += pizza.price * pizza.count;
       }
 
-      return sum
+      return sum;
     },
     totalCountOfPizzas(state) {
-      const pizzas = state.cartItems;
-      let totalCount = 0;
+      const price = state.cartItems;
+      let count = 0;
 
-      for (const pizza of pizzas.values()) {
-        totalCount += pizza.count
+      for (const pizza of price.values()) {
+        count += pizza.count;
       }
 
-      return totalCount
-    }
+      return count;
+    },
   },
   mutations: {
     SET_PIZZAS(state, json) {
-      state.pizzas = json
+      state.pizzas = json;
     },
     SET_CATEGORY(state, value) {
-      state.category = value
+      state.category = value;
     },
-    SET_SORT(state, value) {
-      state.sort = value
-      state.query = `?_sort=${value.key}&_order=asc`
+    SET_SORT(state, sortKey) {
+      state.sort = sortKey;
     },
-    ADD_PIZZA_TO_CART(state, pizza) {
-      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id, pizza);
-
+    ADD_TO_CART(state, pizza) {
+      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id);
       if (isPizzaAlreadyAdded) {
         const modifiedPizza = {
           ...pizza,
-          count: isPizzaAlreadyAdded.count + 1
-        }
-        state.cartItems.set(pizza.id, modifiedPizza)
+          count: isPizzaAlreadyAdded.count + 1,
+        };
+        state.cartItems.set(pizza.id, modifiedPizza);
       } else {
-        state.cartItems.set(pizza.id, { ...pizza, count: 1 })
+        state.cartItems.set(pizza.id, { ...pizza, count: 1 });
       }
     },
-    CLEAR_CART(state) {
-      state.cartItems.clear()
-    },
-    DECREMENT_CART_ITEM(state, id) {
-      const currentPizza = state.cartItems.get(id)
+    DEC_TO_CART(state, pizza) {
+      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id);
+      const modifiedPizza = {
+        ...pizza,
+        count: isPizzaAlreadyAdded.count - 1,
+      };
+      state.cartItems.set(pizza.id, modifiedPizza);
 
-      if (currentPizza.count > 1) {
-        currentPizza.count = currentPizza.count - 1;
+      if (isPizzaAlreadyAdded.count <= 1) {
+        state.cartItems.delete(pizza.id);
       }
     },
-    INCREMENT_CART_ITEM(state, id) {
-      const currentPizza = state.cartItems.get(id)
-
-      currentPizza.count = currentPizza.count + 1;
+    DELETE_PIZZA_IN_CART(state, id) {
+      state.cartItems.delete(id);
     },
-    REMOVE_CART_ITEM(state, id) {
-      state.cartItems.delete(id)
+    DELETE_ALL_PIZZAS_IN_CART(state) {
+      if (window.confirm("Вы уверены что хотите очистить корзину?")) {
+        state.cartItems.clear();
+      }
     },
-    SEARCH_ITEMS(state, text) {
-      state.searchedItems = text
-    }
+    SET_SEARCH_RESULTS(state, data) {
+      state.searchValues = data;
+    },
   },
   actions: {
-    async getPizzas(context) {
+    async getPizzas({ commit }) {
       const response = await fetch("http://localhost:3000/pizzas");
       const json = await response.json();
-
-      context.commit('SET_PIZZAS', json)
+      commit("SET_PIZZAS", json);
     },
-    async setCategory(context, value) {
-      const query = value !== null ? `?category=${value}` : ''
+    async setCategory({ commit, state }, value) {
+      const query =
+        value !== null
+          ? `?category=${value}&_sort=${state.sort}`
+          : `?_sort=${state.sort}`;
 
-      const response = await fetch(`http://localhost:3000/pizzas${query}`);
+      const response = await fetch(
+        `http://localhost:3000/pizzas${query}&_order=desc`
+      );
       const json = await response.json();
 
-      context.commit('SET_PIZZAS', json)
-      context.commit('SET_CATEGORY', value)
+      commit("SET_PIZZAS", json);
+      commit("SET_CATEGORY", value);
     },
-    async setSort(context, value) {
-      const query = context.state.query.replace(context.state.sort.key, value.key);
+    async setSortBy({ commit, state }, sortKey) {
+      const query =
+        state.category !== null
+          ? `?category=${state.category}&_sort=${sortKey}`
+          : `?_sort=${sortKey}`;
 
-      const response = await fetch(`http://localhost:3000/pizzas${query}`);
+      const response = await fetch(
+        `http://localhost:3000/pizzas${query}&_order=desc`
+      );
       const json = await response.json();
+      commit("SET_PIZZAS", json);
+      commit("SET_SORT", sortKey);
+    },
 
-      context.commit('SET_PIZZAS', json),
-        context.commit('SET_SORT', value)
-    }
+    async fetchSearchResults({ commit }, searchValue) {
+      const response = await fetch(
+        `http://localhost:3000/pizzas/?q=${searchValue}`
+      );
+      const data = await response.json();
+      commit("SET_SEARCH_RESULTS", data);
+      console.log(searchValue);
+    },
   },
-  modules: {
-  }
-})
+  modules: {},
+});

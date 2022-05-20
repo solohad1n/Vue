@@ -1,15 +1,15 @@
 <template>
   <ul>
     <li
-      @click="handleActiveSize(index)"
       :class="{
-        active: activeSize === index,
+        active: activeSize === index && availableSizes.includes(item),
         disabled: !availableSizes.includes(item),
       }"
-      v-for="(item, index) in sizesItem"
+      v-for="(item, index) in sizesItems"
       :key="item"
+      @click="handleActiveSize(index)"
     >
-      {{ item }} см.
+      {{ item }} см
     </li>
   </ul>
 </template>
@@ -19,22 +19,23 @@ import { ref } from "@vue/reactivity";
 export default {
   props: ["availableSizes"],
   setup(props) {
-    const sizesItem = [26, 30, 40];
+    const sizesItems = [26, 30, 40];
     const activeSize = ref(0);
-    const handleActiveSize = (index) => {
-      activeSize.value = index;
-    };
 
-    if (sizesItem[0] !== props.availableSizes[0]) {
-      activeSize.value = sizesItem.findIndex(
+    if (props.availableSizes[0] !== sizesItems[0]) {
+      activeSize.value = sizesItems.findIndex(
         (item) => item === props.availableSizes[0]
       );
     }
 
-    return { sizesItem, activeSize, handleActiveSize };
+    const handleActiveSize = (index) => {
+      activeSize.value = index;
+    };
+
+    return { sizesItems, activeSize, handleActiveSize };
   },
 };
 </script>
 
-<style >
+<style>
 </style>

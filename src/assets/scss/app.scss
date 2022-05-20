@@ -1,10 +1,9 @@
-@import './variables.scss';
-@import 'libs/normalize';
-@import './components/all';
-
-body {
-  background-color: $background;
-}
+@import "./variables.scss";
+@import "libs/normalize";
+@import "./components/all";
+// body {
+//   // background-color: $background;
+// }
 
 .wrapper {
   width: calc(100vw - 100px);
