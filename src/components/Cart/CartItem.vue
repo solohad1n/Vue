@@ -63,7 +63,7 @@ export default {
         const store = useStore()
 
         const handleDeletePizza = () => {
-            store.commit("DELETE_PIZZA_IN_CART", props.item.id)
+            store.commit("DELETE_PIZZA_IN_CART", props.item.id + '' + props.item.price)
         }
         const addPizza = () => {
             store.commit("ADD_TO_CART", props.item)

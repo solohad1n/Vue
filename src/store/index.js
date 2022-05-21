@@ -41,27 +41,29 @@ export default createStore({
       state.sort = sortKey;
     },
     ADD_TO_CART(state, pizza) {
-      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id + );
+      const uniqIdFromStr = pizza.id + '' + pizza.price
+      const isPizzaAlreadyAdded = state.cartItems.get(uniqIdFromStr);
       if (isPizzaAlreadyAdded) {
         const modifiedPizza = {
           ...pizza,
           count: isPizzaAlreadyAdded.count + 1,
         };
-        state.cartItems.set(pizza.id, modifiedPizza);
+        state.cartItems.set(uniqIdFromStr, modifiedPizza);
       } else {
-        state.cartItems.set(pizza.id, { ...pizza, count: 1 });
+        state.cartItems.set(uniqIdFromStr, { ...pizza, count: 1 });
       }
     },
     DEC_TO_CART(state, pizza) {
-      const isPizzaAlreadyAdded = state.cartItems.get(pizza.id);
+      const uniqIdFromStr = pizza.id + '' + pizza.price
+      const isPizzaAlreadyAdded = state.cartItems.get(uniqIdFromStr);
       const modifiedPizza = {
         ...pizza,
         count: isPizzaAlreadyAdded.count - 1,
       };
-      state.cartItems.set(pizza.id, modifiedPizza);
+      state.cartItems.set(uniqIdFromStr, modifiedPizza);
 
       if (isPizzaAlreadyAdded.count <= 1) {
-        state.cartItems.delete(pizza.id);
+        state.cartItems.delete(uniqIdFromStr);
       }
     },
     DELETE_PIZZA_IN_CART(state, id) {
