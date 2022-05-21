@@ -35,13 +35,14 @@ export default {
     setup(props) {
         const store = useStore()
         const selectedPizzaPrice = ref(0)
-
+        
         const count = computed(()=> store.state.cartItems.get(props.pizza.id + props.pizza.price[selectedPizzaPrice.value])?.count)
 
         const handleAddCount = () => {
                     const pizzainCart = {
             ...props.pizza, 
             count: count.value,
+            types:[],
             price:props.pizza.price[selectedPizzaPrice.value]}
 
             store.commit("ADD_TO_CART", pizzainCart)
